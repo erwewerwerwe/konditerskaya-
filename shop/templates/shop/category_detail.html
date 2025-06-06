@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+:root {
+    --main-brown: #5a4a3d;
+    --light-beige: #f5f0e6;
+    --accent-gold: #bfa67a;
+    --input-border: #d9d4ca;
+    --text-dark: #3e2f22;
+    --text-light: #7a6b5f;
+}
+
+.category-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.category-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.products-list {
+    display: flex;
+    flex-wrap: wrap;             /* allow wrapping to next line */
+    gap: 20px;                   /* optional spacing between items */
+    justify-content: center;
+}
+
+.sort-filter-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.sort-button {
+    background-color: white;
+    color: var(--main-brown);
+    border: 1px solid var(--input-border);
+    border-radius: 6px;
+    padding: 8px 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.sort-button:hover {
+    background-color: var(--light-beige);
+    border-color: var(--accent-gold);
+}
+
+.sort-button.active {
+    background-color: var(--main-brown);
+    color: white;
+    border-color: var(--main-brown);
+}
+
+.filter-select-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.filter-input {
+    padding: 8px 12px;
+    border: 1px solid var(--input-border);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    width: 80px;
+    background: white;
+}
+
+.filter-input:focus {
+    outline: none;
+    border-color: var(--accent-gold);
+}
+
+.filter-submit {
+    background-color: var(--main-brown);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.filter-submit:hover {
+    background-color: var(--accent-gold);
+}
+
+.weight-unit {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.reset-filter {
+    color: var(--main-brown);
+    text-decoration: none;
+    font-size: 1.2rem;
+    margin-left: 5px;
+    line-height: 1;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .category-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .category-title-wrapper {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .filter-select-wrapper {
+        width: 100%;
+    }
+
+    .filter-input {
+        flex-grow: 1;
+    }
+}
+
+
+.product-icon {
+    width: 45px;    /* increase from previous size, e.g., 16px or 24px */
+    height: 45px;
+}
+
+</style>
+
+<div class="category-header">
+    <div class="category-title-wrapper">
+        <h1>{{ category.name }}</h1>
+        <div class="sort-filter-group">
+            {# Кнопка сортировки по цене: по возрастанию #}
+            <a href="?sort=price_asc{% if request.GET.weight %}&weight={{ request.GET.weight }}{% endif %}"
+               class="sort-button {% if current_sort == 'price_asc' %}active{% endif %}">Цена ↑</a>
+
+            {# Кнопка сортировки по цене: по убыванию #}
+            <a href="?sort=price_desc{% if request.GET.weight %}&weight={{ request.GET.weight }}{% endif %}"
+               class="sort-button {% if current_sort == 'price_desc' %}active{% endif %}">Цена ↓</a>
+
+            {# Форма фильтрации по весу #}
+            <form method="get" id="weightFilterForm" class="filter-select-wrapper" style="margin:0; align-items: center;">
+                {% if current_sort %}
+                <input type="hidden" name="sort" value="{{ current_sort }}">
+                {% endif %}
+                <input type="number"
+                       name="weight"
+                       id="weightInput"
+                       class="filter-input"
+                       value="{{ request.GET.weight }}"
+                       min="0"
+                       step="0.1"
+                       placeholder="Вес">
+                <span class="weight-unit">кг</span>
+                <button type="submit" class="filter-submit">ОК</button>
+                {% if request.GET.weight %}
+                <a href="?{% if current_sort %}sort={{ current_sort }}{% endif %}" class="reset-filter" title="Сбросить">
+                    ×
+                </a>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="products-list">
+    {% if products %}
+    {% for product in products %}
+    <div class="product-card">
+        {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+        {% endif %}
+        <div class="product-header">
+            <span class="product-title">{{ product.name }}</span>
+            <span class="product-price">{{ product.price }} ₽{% if product.unit %}/{{ product.unit }}{% endif %}</span>
+        </div>
+        <div class="product-info">
+            <div class="product-row">
+                <img src="{% static 'shop/images/weightt.png' %}" alt="bag" class="product-icon">
+                <span>{{ product.weight }} кг </span>
+            </div>
+            <div class="product-row">
+                <img src="{% static 'shop/images/cutleryy.png' %}" alt="Количество человек" class="product-icon">
+                <span>{{ product.persons_info }} человек </span>
+            </div>
+        </div>
+        <div class="product-actions">
+            <a href="{% url 'cart:add_to_cart' product.id %}" class="icon-action" title="Добавить в корзину">
+                <img src="{% static 'shop/images/cart.png' %}" alt="Корзина" class="action-icon">
+            </a>
+            <a href="{% url 'cart:add_to_favorites' product.id %}" class="icon-action" title="Добавить в избранное">
+                <img src="{% static 'shop/images/favv.png' %}" alt="Избранное" class="action-icon">
+            </a>
+        </div>
+        <a href="{% url 'product_detail' product.id %}" class="product-btn">Подробнее</a>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p>В этой категории нет товара.</p>
+    {% endif %}
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Валидация ввода веса
+    const weightInput = document.getElementById('weightInput');
+    weightInput.addEventListener('input', function() {
+        if (this.value < 0) {
+            this.value = 0;
+        }
+    });
+});
+</script>
+{% endblock %}

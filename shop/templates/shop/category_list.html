@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Каталог товаров</h1>
+    <div class="category-list">
+        {% for category in categories %}
+            <div class="category-card">
+                <a href="{{ category.get_absolute_url }}">
+                    {{ category.name }}
+                </a>
+            </div>
+        {% empty %}
+            <p>Категории отсутствуют.</p>
+        {% endfor %}
+    </div>
+{% endblock %}

@@ -1,0 +1,303 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    :root {
+        --main-brown: #5a4a3d;
+        --light-beige: #f5f0e6;
+        --accent-gold: #bfa67a;
+        --text-dark: #3e2f22;
+        --text-light: #7a6e64;
+    }
+
+    .orders-wrapper {
+        max-width: 1200px;
+        margin: 3rem auto;
+        padding: 0 1.5rem;
+    }
+
+    .orders-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid var(--light-beige);
+    }
+
+    .orders-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--main-brown);
+        margin: 0;
+        letter-spacing: -0.5px;
+    }
+
+    .orders-count {
+        color: var(--text-light);
+        font-size: 1rem;
+    }
+
+    .orders-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .order-card {
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(90, 74, 61, 0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border: 1px solid var(--light-beige);
+    }
+
+    .order-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(90, 74, 61, 0.12);
+    }
+
+    .order-card-header {
+        background: var(--light-beige);
+        padding: 1.2rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .order-number {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--main-brown);
+    }
+
+    .order-date {
+        color: var(--text-light);
+        font-size: 0.9rem;
+    }
+
+    .order-status {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.3rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+    }
+
+    .status-new {
+        background: rgba(191, 166, 122, 0.2);
+        color: var(--main-brown);
+    }
+
+    .status-processing {
+        background: rgba(191, 166, 122, 0.3);
+        color: var(--main-brown);
+    }
+
+    .status-completed {
+        background: rgba(94, 158, 94, 0.2);
+        color: #2e7d32;
+    }
+
+    .status-cancelled {
+        background: rgba(244, 67, 54, 0.1);
+        color: #c62828;
+    }
+
+    .order-card-body {
+        padding: 1.5rem;
+    }
+
+    .order-details-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.8rem;
+    }
+
+    .order-details-label {
+        color: var(--text-light);
+        font-size: 0.95rem;
+    }
+
+    .order-details-value {
+        font-weight: 500;
+        color: var(--text-dark);
+    }
+
+    .order-total {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--main-brown);
+    }
+
+    .order-actions {
+        padding: 1rem 1.5rem;
+        border-top: 1px solid var(--light-beige);
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+    }
+
+    .order-link,
+    .order-delete-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.5rem 1rem;
+        background: var(--accent-gold);
+        color: white;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background 0.2s ease;
+        border: none;
+        cursor: pointer;
+        font-family: inherit;
+    }
+
+    .order-link:hover,
+    .order-delete-btn:hover {
+        background: var(--main-brown);
+    }
+
+    .order-link svg,
+    .order-delete-btn svg {
+        margin-left: 0.5rem;
+        width: 16px;
+        height: 16px;
+    }
+
+    .order-delete-btn {
+        background: #c62828;
+    }
+
+    .order-delete-btn:hover {
+        background: #8b1a1a;
+    }
+
+    .empty-orders {
+        text-align: center;
+        padding: 4rem 2rem;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(90, 74, 61, 0.05);
+        margin-top: 2rem;
+        border: 1px dashed var(--light-beige);
+    }
+
+    .empty-title {
+        font-size: 1.5rem;
+        color: var(--main-brown);
+        margin-bottom: 1rem;
+    }
+
+    .empty-text {
+        color: var(--text-light);
+        margin-bottom: 2rem;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .shop-link {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.8rem 1.8rem;
+        background: var(--main-brown);
+        color: white;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: transform 0.2s ease;
+    }
+
+    .shop-link:hover {
+        transform: translateY(-2px);
+        background: var(--text-dark);
+    }
+
+    @media (max-width: 768px) {
+        .orders-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .orders-count {
+            margin-top: 0.5rem;
+        }
+
+        .orders-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="orders-wrapper">
+    <div class="orders-header">
+        <h1 class="orders-title">Мои заказы</h1>
+        {% if orders %}
+        <div class="orders-count">{{ orders|length }} заказ{{ orders|pluralize:"ов" }}</div>
+        {% endif %}
+    </div>
+
+    {% if orders %}
+        <div class="orders-grid">
+            {% for order in orders %}
+            <div class="order-card">
+                <div class="order-card-header">
+                    <div>
+                        <div class="order-number">Заказ #{{ order.id }}</div>
+                        <div class="order-date">{{ order.created|date:"d.m.Y" }}</div>
+                    </div>
+                    <span class="order-status status-{{ order.status|lower }}">
+                        {{ order.get_status_display }}
+                    </span>
+                </div>
+
+                <div class="order-card-body">
+                    <div class="order-details-row">
+                        <span class="order-details-label">Дата оформления:</span>
+                        <span class="order-details-value">{{ order.created|date:"d.m.Y H:i" }}</span>
+                    </div>
+                    <div class="order-details-row">
+                        <span class="order-details-label">Кол-во товаров:</span>
+                        <span class="order-details-value">{{ order.items.count }}</span>
+                    </div>
+                </div>
+
+                <div class="order-actions">
+                    <a href="{% url 'orders:order_detail' order.id %}" class="order-link">
+                        Подробнее
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+                        </svg>
+                    </a>
+                    <form action="{% url 'orders:order_delete' order.id %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="order-delete-btn" title="Удалить заказ">
+                            Удалить
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M16 9v10H8V9h8m-1.5-6h-5l-1 1H5v2h14V4h-4.5l-1-1z"/>
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-orders">
+            <h3 class="empty-title">У вас пока нет заказов</h3>
+            <p class="empty-text">Начните покупки в нашем магазине и здесь появятся ваши заказы</p>
+            <a href="{% url 'index' %}" class="shop-link">
+                Перейти в магазин
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="margin-left: 8px; width: 18px; height: 18px;">
+                    <path d="M7 11H17V13H7zM4 7H20V9H4zM10 15H14V17H10z"/>
+                </svg>
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

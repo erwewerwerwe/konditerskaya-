@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+.cart-container {
+    display: flex;
+    gap: 40px;
+    margin: 40px 0;
+    align-items: flex-start; /* keeps boxes aligned at the top */
+}
+.cart-main {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 2px 16px #e9e9e9;
+    padding: 32px 32px 24px 32px;
+    flex: 2;
+    min-width: 600px;
+}
+.cart-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+}
+.cart-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 16px;
+}
+.cart-table th {
+    text-align: left;
+    color: #888;
+    font-size: 1rem;
+    font-weight: 400;
+    padding-bottom: 8px;
+}
+.cart-table td {
+    background: #f8f8f8;
+    border-radius: 12px;
+    vertical-align: middle;
+    padding: 12px 8px;
+    font-size: 1rem;
+}
+.cart-product-img {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 16px;
+}
+.cart-product-info {
+    display: flex;
+    align-items: center;
+}
+.cart-qty-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.cart-qty-btn {
+    background: #eee;
+    border: none;
+    border-radius: 50%;
+    width: 28px;
+    height: 28px;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+.cart-remove-btn {
+    background: none;
+    border: none;
+    color: #b00;
+    font-size: 1.3rem;
+    cursor: pointer;
+    margin-left: 8px;
+}
+.cart-summary {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 2px 16px #e9e9e9;
+    padding: 16px 14px 12px 14px;
+    min-width: 320px;
+    max-width: 350px;
+    position: sticky;
+    top: 40px;
+    right: 20px;
+}
+.cart-summary-title {
+    font-size: 1.1rem;
+    margin-bottom: 12px;
+    color: #888;
+}
+.cart-summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 1rem;
+}
+.cart-summary-total {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 18px 0 24px 0;
+    display: flex;
+    justify-content: space-between;
+}
+.cart-checkout-btn {
+    width: 100%;
+    background: #5a4a3d;
+    color: #fff;
+    font-size: 1.15rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 12px;
+    padding: 16px 0;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background 0.2s;
+}
+.cart-checkout-btn:hover {
+    background: #3e2f22;
+}
+</style>
+
+<div class="cart-container">
+    <div class="cart-main">
+        <div class="cart-title">
+            Корзина
+            {% if cart_items %}
+                <span style="color:#888;font-weight:400;font-size:1rem;">{{ total_quantity }} товара</span>
+            {% endif %}
+        </div>
+
+        {% if cart_items %}
+        <table class="cart-table">
+            <thead>
+                <tr>
+                    <th>Товар</th>
+                    <th>Количество</th>
+                    <th>Цена</th>
+                    <th>Сумма</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in cart_items %}
+                <tr>
+                    <td>
+                        <div class="cart-product-info">
+                            {% if item.product %}
+                                <img src="{% if item.product.image %}{{ item.product.image.url }}{% else %}{% static 'shop/images/no-image.png' %}{% endif %}"
+                                     class="cart-product-img" alt="{{ item.product.name }}">
+                                <div>
+                                    <div style="font-weight:600;">{{ item.product.name }}</div>
+                                    <div style="font-size:0.95rem;color:#888;">{{ item.product.description|default_if_none:"" }}</div>
+                                </div>
+                            {% elif item.custom_cake %}
+                                <img src="{% if item.custom_cake.photo_example %}{{ item.custom_cake.photo_example.url }}{% else %}{% static 'shop/images/no-image.png' %}{% endif %}"
+                                     class="cart-product-img" alt="Кастомный торт #{{ item.custom_cake.id }}">
+                                <div>
+                                    <div style="font-weight:600;">Кастомный торт #{{ item.custom_cake.id }}</div>
+                                    <div style="font-size:0.95rem;color:#888;">
+                                        Вес: {{ item.custom_cake.get_weight_display_ru }}<br>
+                                        Бисквит: {{ item.custom_cake.get_biscuit_display_ru }}<br>
+                                        Крем: {{ item.custom_cake.get_cream_display_ru }}<br>
+                                        Начинка: {{ item.custom_cake.get_filling_display_ru }}<br>
+                                        Оформление: {{ item.custom_cake.get_decoration_display_ru }}<br>
+                                        Пожелания: {{ item.custom_cake.comment|default:"Отсутствуют" }}
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div>Неизвестный товар</div>
+                            {% endif %}
+                        </div>
+                    </td>
+                    <td>
+                        <form action="{% url 'cart:update_quantity' item.id %}" method="post" class="cart-qty-controls">
+                            {% csrf_token %}
+                            <button type="submit" name="action" value="decrease" class="cart-qty-btn">−</button>
+                            <span>{{ item.quantity }}</span>
+                            <button type="submit" name="action" value="increase" class="cart-qty-btn">+</button>
+                        </form>
+                    </td>
+                    <td style="white-space:nowrap;">
+                        <span style="color:#b00;font-weight:600;">
+                            {% if item.product %}
+                                {{ item.product.price }} ₽
+                            {% elif item.custom_cake %}
+                                {{ item.custom_cake.price }} ₽
+                            {% else %}
+                                —
+                            {% endif %}
+                        </span>
+                    </td>
+                    <td style="white-space:nowrap;">
+                        <span style="font-weight:600;">{{ item.sub_total }} ₽</span>
+                    </td>
+                    <td>
+                        <form action="{% url 'cart:remove_from_cart' item.id %}" method="post" style="display:inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="cart-remove-btn" title="Удалить">&#128465;</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Ваша корзина пуста</p>
+        {% endif %}
+    </div>
+
+    <div class="cart-summary">
+        <div class="cart-summary-row">
+            <span>Товары, {{ total_quantity }} шт.</span>
+            <span>{{ total }} ₽</span>
+        </div>
+        <div class="cart-summary-total">
+            <span>Итого</span>
+            <span>{{ total }} ₽</span>
+        </div>
+        <form action="{% url 'orders:create_order' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="cart-checkout-btn">Заказать</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

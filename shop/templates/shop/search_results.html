@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Результаты поиска{% endblock %}
+
+{% block content %}
+<style>
+
+.product-icon {
+    width: 45px;    /* increase from previous size, e.g., 16px or 24px */
+    height: 45px;
+}
+</style>
+<h2 class="section-title">Результаты поиска по запросу: "{{ query }}"</h2>
+
+<div class="products-list">
+    {% if products %}
+    {% for product in products %}
+    <div class="product-card">
+        {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+        {% endif %}
+        <div class="product-header">
+            <span class="product-title">{{ product.name }}</span>
+            <span class="product-price">{{ product.price }} ₽{% if product.unit %}/{{ product.unit }}{% endif %}</span>
+        </div>
+        <div class="product-info">
+            <div class="product-row">
+                <img src="{% static 'shop/images/weightt.png' %}" alt="bag" class="product-icon">
+                <span>{{ product.weight }}</span>
+            </div>
+            <div class="product-row">
+                <img src="{% static 'shop/images/cutleryy.png' %}" alt="Количество человек" class="product-icon">
+                <span>{{ product.persons_info }}</span>
+            </div>
+        </div>
+        <div class="product-actions">
+            <a href="{% url 'cart:add_to_cart' product.id %}" class="icon-action" title="Добавить в корзину">
+                <img src="{% static 'shop/images/cart.png' %}" alt="Корзина" class="action-icon">
+            </a>
+            <a href="{% url 'cart:add_to_favorites' product.id %}" class="icon-action" title="Добавить в избранное">
+                <img src="{% static 'shop/images/favv.png' %}" alt="Избранное" class="action-icon">
+            </a>
+        </div>
+        <a href="{% url 'product_detail' product.id %}" class="product-btn">Подробнее</a>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p>Ничего не найдено.</p>
+    {% endif %}
+</div>
+{% endblock %}

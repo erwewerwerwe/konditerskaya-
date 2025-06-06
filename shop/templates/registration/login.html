@@ -1,0 +1,215 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход | Кондитерская</title>
+    <style>
+:root {
+    --primary: #5a4a3d;       /* тёмно-коричневый */
+    --primary-dark: #3e2f22;  /* более тёмный коричневый для ховера */
+    --secondary: #836452;     /* мягкий коричневый оттенок */
+    --light: #ae8867;         /* светлый коричневый */
+    --dark: #29220f;          /* очень тёмный коричневый */
+    --gray: #6c5e53;          /* серо-коричневый */
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.auth-container {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(90, 74, 61, 0.15); /* коричневая тень */
+    width: 100%;
+    max-width: 440px;
+    overflow: hidden;
+    position: relative;
+}
+
+.auth-header {
+    background: var(--primary);
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+.auth-header h1 {
+    font-weight: 700;
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+}
+
+.auth-header p {
+    opacity: 0.9;
+    font-size: 0.95rem;
+}
+
+.auth-body {
+    padding: 30px;
+}
+
+.auth-logo {
+    width: 80px;
+    height: 80px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: -70px auto 20px;
+    box-shadow: 0 5px 15px rgba(90, 74, 61, 0.15); /* коричневая тень */
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--dark);
+    font-size: 0.95rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    background: #f8f9fa;
+}
+
+.form-control:focus {
+    border-color: var(--primary);
+    background: white;
+    box-shadow: 0 0 0 3px rgba(90, 74, 61, 0.25); /* коричневая тень */
+    outline: none;
+}
+
+.btn {
+    display: inline-block;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    text-align: center;
+}
+
+.btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 20px;
+    color: var(--gray);
+    font-size: 0.95rem;
+}
+
+.auth-footer a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.auth-footer a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+.divider {
+    display: flex;
+    align-items: center;
+    margin: 20px 0;
+    color: var(--gray);
+    font-size: 0.9rem;
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.divider::before {
+    margin-right: 10px;
+}
+
+.divider::after {
+    margin-left: 10px;
+}
+
+@media (max-width: 480px) {
+    .auth-container {
+        border-radius: 12px;
+    }
+
+    .auth-header {
+        padding: 25px 20px;
+    }
+
+    .auth-body {
+        padding: 25px 20px;
+    }
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-header">
+            <h1>Добро пожаловать!</h1>
+            <p>Войдите в свой аккаунт</p>
+        </div>
+        <div class="auth-body">
+            <form method="post" novalidate>
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="id_username">Email или имя пользователя</label>
+                    <input type="text" name="username" id="id_username" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="id_password">Пароль</label>
+                    <input type="password" name="password" id="id_password" class="form-control" required>
+                </div>
+
+                <button type="submit" class="btn">Войти</button>
+
+                <div class="auth-footer">
+                    Нет аккаунта? <a href="{% url 'register' %}">Создать аккаунт</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

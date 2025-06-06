@@ -1,0 +1,567 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+/* Основная зеленая секция - абсолютно на всю ширину */
+.custom-cake-section {
+    display: flex;
+    background-color: #BFA87F ;
+    width: 100%;
+    margin-top: 0px;
+    max-width: 100vw;
+    margin: 0;
+    padding: 60px 0 40px;
+    position: relative;
+    overflow: hidden;
+    border-radius: 0;
+}
+body {
+    padding-top: 80px; /* под высоту хедера */
+}
+
+main {
+    margin-top: 0;
+}
+.container-full-width {
+    display: flex;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    height: 100%;
+    padding: 0 60px;
+    box-sizing: border-box;
+}
+
+.custom-cake-image {
+    flex: 0 0 70%;
+    display: flex;
+    gap: 15px;
+    margin-left: -8%;
+    position: relative;
+}
+
+/* Первый торт (без изменений) */
+.cake-img:first-child {
+    width: 50%;
+    height: 110.5%;
+    object-position: 0% 75%;
+}
+
+.cake-img:last-child {
+    width: 65%;
+    height: 115%;
+    object-position: 40% 70%;
+    margin-left: 0;
+}
+
+.cake-img {
+    width: 50%;
+    height: 108.5%;
+    object-fit: cover;
+    object-position: 0% 75%;
+    transform: scale(1);
+    transform-origin: left center;
+    filter: brightness(0.95) contrast(1.05);
+    box-shadow:
+        5px 5px 15px rgba(0, 0, 0, 0.2),
+        -2px 0 10px rgba(255, 255, 255, 0.1) inset;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    transition:
+        transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1),
+        filter 0.3s ease;
+    backface-visibility: hidden;
+    image-rendering: -webkit-optimize-contrast;
+    opacity: 0.98;
+}
+
+/* Эффекты при наведении */
+.cake-img:hover {
+    transform: scale(1.02);
+    filter: brightness(1) contrast(1.1);
+    box-shadow:
+        8px 8px 20px rgba(0, 0, 0, 0.25),
+        -3px 0 15px rgba(255, 255, 255, 0.15) inset;
+    z-index: 2;
+}
+
+/* Текстовый блок */
+.custom-cake-content {
+    flex: 1;
+    color: #5a4a3d; /* тёмный коричневый для контраста на бежевом фоне */
+    padding: 60px 5% 60px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 45%;
+}
+
+.custom-cake-title {
+    font-size: 2.8rem;
+    font-weight: 700;
+    margin-bottom: 25px;
+    line-height: 1.2;
+}
+
+.custom-cake-text {
+    font-size: 1.3rem;
+    margin-bottom: 35px;
+    line-height: 1.6;
+}
+
+.custom-cake-btn {
+    background-color: #5a4a3d;
+    color: #fff; /* бежевый */
+    padding: 16px 45px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    text-decoration: none;
+    display: inline-block;
+    width: fit-content;
+    transition: all 0.3s ease;
+}
+
+.custom-cake-btn:hover {
+    background-color: #3e2f22; /* более тёмный бежевый */
+    color: #fff;
+}
+
+.product-icon {
+    width: 40px;
+    height: 40px;
+}
+
+.contacts-section {
+    background-color: #f5f0e6;
+    padding: 60px 0;
+    color: #5a4a3d;
+}
+
+.contacts-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 60px;
+    display: flex;
+    gap: 60px;
+}
+
+.contacts-info {
+    flex: 1;
+}
+
+.contacts-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    color: #5a4a3d;
+}
+
+.contacts-subtitle {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #5a4a3d;
+}
+
+.contacts-schedule {
+    margin-bottom: 30px;
+}
+
+.schedule-row {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.schedule-days {
+    font-weight: 600;
+    width: 180px;
+}
+
+.schedule-hours {
+    font-weight: 500;
+}
+
+.contacts-address {
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.contacts-phone {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #5a4a3d;
+    margin-bottom: 30px;
+    display: inline-block;
+}
+
+.bus-stations {
+    margin-top: 30px;
+}
+
+.bus-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.bus-line {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    margin-right: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+    font-size: 0.8rem;
+}
+
+.bus-info {
+    flex: 1;
+}
+
+.bus-name {
+    font-weight: 600;
+}
+
+.bus-distance {
+    font-size: 0.9rem;
+    color: #7a6e64;
+}
+
+.map-container {
+    flex: 1;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    height: 500px;
+}
+
+@media (max-width: 1024px) {
+    .contacts-container {
+        flex-direction: column;
+        padding: 0 30px;
+        gap: 30px;
+    }
+
+    .map-container {
+        height: 400px;
+    }
+}
+
+/* Кнопка "Показать все товары" */
+.show-all-button-container {
+    text-align: center;
+    margin: 20px 0 40px;
+    font-family: inherit;
+}
+
+.show-all-button {
+    background-color: #5a4a3d;
+    color: #fff;
+    padding: 14px 40px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 1.2rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-family: inherit;
+}
+
+.show-all-button:hover {
+    background-color: #3e2f22;
+}
+
+/* Стили для списка товаров */
+.products-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px;
+    justify-content: center;
+    margin: 30px 0;
+}
+
+.product-card {
+    background: #fff;
+    border: 2px solid #5a4a3d;
+    border-radius: 18px;
+    box-shadow: 0 2px 8px rgba(90, 74, 61, 0.5);
+    width: 320px;
+    padding: 18px 18px 16px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    transition: box-shadow 0.2s;
+    position: relative;
+    color: #5a4a3d;
+}
+
+.product-card:hover {
+    box-shadow: 0 4px 16px rgba(90, 74, 61, 0.8);
+}
+
+.product-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 12px;
+}
+
+.product-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.product-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #5a4a3d;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.product-price {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #5a4a3d;
+}
+
+.product-info {
+    margin-bottom: 18px;
+}
+
+.product-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.97rem;
+    color: #5a4a3d;
+    margin-bottom: 4px;
+}
+
+.product-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.product-actions {
+    display: flex;
+    gap: 18px;
+    margin-bottom: 12px;
+    justify-content: flex-end;
+}
+
+.icon-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    transition: background 0.2s;
+    border: 1.5px solid #5a4a3d;
+    text-decoration: none;
+    color: #5a4a3d;
+}
+
+.icon-action:hover {
+    background: #5a4a3d;
+    color: #fff;
+}
+
+.action-icon {
+    width: 20px;
+    height: 20px;
+    filter: none;
+}
+
+.icon-action:hover .action-icon {
+    filter: brightness(0) invert(1);
+}
+
+.product-btn {
+    display: block;
+    width: 100%;
+    background: #5a4a3d;
+    color: #fff;
+    text-align: center;
+    border-radius: 12px;
+    padding: 10px 0;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    margin-top: auto;
+    transition: background 0.2s;
+    border: none;
+}
+
+.product-btn:hover {
+    background: #3e2f22;
+    color: #fff;
+}
+</style>
+
+<div class="custom-cake-section">
+    <div class="container-full-width">
+        <div class="custom-cake-image">
+            <img src="{% static 'shop/images/your-green-cake.png' %}" alt="Торт 1" class="cake-img">
+            <img src="{% static 'shop/images/your-green-cake1.png' %}" alt="Торт 2" class="cake-img">
+        </div>
+        <div class="custom-cake-content">
+            <h2 class="custom-cake-title">Соберите свой идеальный торт!</h2>
+            <p class="custom-cake-text">
+                Хотите уникальный десерт? Выберите начинку, оформление и размер — и мы испечём торт специально для вас!
+            </p>
+            <a href="{% url 'custom_cake' %}" class="custom-cake-btn">Собрать свой торт</a>
+        </div>
+    </div>
+</div>
+
+<h2 class="section-title">Наши товары</h2>
+
+<div class="products-list" id="products-list">
+    {% for product in products %}
+    <div class="product-card" {% if forloop.counter > 6 %}style="display:none;"{% endif %}>
+        {% if product.image %}
+        <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+        {% endif %}
+        <div class="product-header">
+            <span class="product-title">{{ product.name }}</span>
+            <span class="product-price">{{ product.price }} ₽{% if product.unit %}/{{ product.unit }}{% endif %}</span>
+        </div>
+        <div class="product-info">
+            <div class="product-row">
+                <img src="{% static 'shop/images/weightt.png' %}" alt="bag" class="product-icon">
+                <span>{{ product.weight }} кг </span>
+            </div>
+            <div class="product-row">
+                <img src="{% static 'shop/images/cutleryy.png' %}" alt="Количество человек" class="product-icon">
+                <span>{{ product.persons_info }} человек</span>
+            </div>
+        </div>
+
+        <div class="product-actions">
+            <a href="{% url 'cart:add_to_cart' product.id %}" class="icon-action" title="Добавить в корзину">
+                <img src="{% static 'shop/images/cart.png' %}" alt="Корзина" class="action-icon">
+            </a>
+            <a href="{% url 'cart:add_to_favorites' product.id %}" class="icon-action" title="Добавить в избранное">
+                <img src="{% static 'shop/images/favv.png' %}" alt="Избранное" class="action-icon">
+            </a>
+        </div>
+        <a href="{% url 'product_detail' product.id %}" class="product-btn">Подробнее</a>
+    </div>
+    {% empty %}
+    <p>Товары отсутствуют.</p>
+    {% endfor %}
+</div>
+
+<div class="show-all-button-container">
+    <button id="show-all-btn" class="show-all-button">Показать все товары</button>
+</div>
+
+<div class="contacts-section">
+    <div class="contacts-container">
+        <div class="contacts-info">
+            <h2 class="contacts-title">МЫ ЖДЁМ ВАС В ГОРОДЕ ТОМСКЕ</h2>
+
+            <div class="contacts-schedule">
+                <div class="schedule-row">
+                    <div class="schedule-days">Понедельник—Пятница</div>
+                    <div class="schedule-hours">09:00–21:00</div>
+                </div>
+                <div class="schedule-row">
+                    <div class="schedule-days">Суббота—Воскресенье</div>
+                    <div class="schedule-hours">10:00–21:00</div>
+                </div>
+            </div>
+
+            <div class="contacts-address">
+                Томск, проспект Фрунзе, 92А
+            </div>
+
+            <a href="tel:+7912251345" class="contacts-phone">+7 (91) 225-13-45</a>
+
+            <h3 class="contacts-subtitle">Ближайшие остановки</h3>
+            <div class="bus-stations">
+                <div class="bus-item">
+                    <div class="bus-line" style="background-color: #5a4a3d;">1</div>
+                    <div class="bus-info">
+                        <div class="bus-name">Тверская улица</div>
+                        <div class="bus-distance">2 минуты пешком</div>
+                    </div>
+                </div>
+                <div class="bus-item">
+                    <div class="bus-line" style="background-color: #5a4a3d;">2</div>
+                    <div class="bus-info">
+                        <div class="bus-name">Киевская улица</div>
+                        <div class="bus-distance">4 минуты пешком</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="map-container">
+            <div id="yandex-map" style="width: 100%; height: 100%; position: relative; overflow: hidden;"></div>
+            <script type="text/javascript">
+        // Функция для загрузки API Яндекс.Карт
+        function loadYandexMap() {
+            const script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = 'https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3Ae5ebe882278450cfaa754f99edf17930fe5c583351459a462900ea660d676db7&width=100%&height=100%&lang=ru_RU&scroll=true';
+            script.async = true;
+            script.charset = 'utf-8';
+            document.getElementById('yandex-map').appendChild(script);
+        }
+
+        // Загружаем карту после полной загрузки страницы
+        if (window.addEventListener) {
+            window.addEventListener('load', loadYandexMap, false);
+        } else if (window.attachEvent) {
+            window.attachEvent('onload', loadYandexMap);
+        }
+
+            </script>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const showAllBtn = document.getElementById('show-all-btn');
+    const productsList = document.getElementById('products-list');
+    let showingAll = false;
+
+    showAllBtn.addEventListener('click', function() {
+        if (!showingAll) {
+            // Показать все товары
+            const hiddenProducts = productsList.querySelectorAll('div.product-card[style*="display:none"]');
+            hiddenProducts.forEach(function(card) {
+                card.style.display = 'flex';
+            });
+            showAllBtn.textContent = 'Скрыть товары';
+            showingAll = true;
+        } else {
+            // Скрыть товары после 6-го
+            const allProducts = productsList.querySelectorAll('div.product-card');
+            allProducts.forEach(function(card, index) {
+                if (index >= 6) {
+                    card.style.display = 'none';
+                }
+            });
+            showAllBtn.textContent = 'Показать все товары';
+            showingAll = false;
+        }
+    });
+});
+</script>
+{% endblock %}

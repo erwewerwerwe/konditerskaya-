@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<style>
+.feedback-page {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+
+}
+
+.feedback-title {
+    color: #5a4a3d;
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #f5f0e6;
+    font-weight: 600;
+}
+
+.feedback-form {
+    background: #faf7f2;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #5a4a3d;
+    font-size: 0.95rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #d9d4ca;
+    border-radius: 8px;
+    background: white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #bfa67a;
+    box-shadow: 0 0 0 3px rgba(191, 166, 122, 0.2);
+}
+
+textarea.form-control {
+    min-height: 150px;
+    resize: vertical;
+}
+
+.submit-btn {
+    background: #5a4a3d;
+    color: white;
+    border: none;
+    padding: 14px 25px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+}
+
+.submit-btn:hover {
+    background: #3e2f22;
+    transform: translateY(-2px);
+}
+
+.errorlist {
+    color: #c94e4e;
+    margin-top: 5px;
+    padding-left: 0;
+    list-style: none;
+    font-size: 0.85rem;
+}
+
+/* Стили для выбора рейтинга */
+.rating-select {
+    display: flex;
+    gap: 10px;
+}
+
+.rating-select option {
+    padding: 8px;
+}
+</style>
+
+<div class="feedback-page">
+    <h2 class="feedback-title">
+        {% if form.instance.pk %}
+            Редактировать отзыв для {{ product.name }}
+        {% else %}
+            Оставить отзыв для {{ product.name }}
+        {% endif %}
+    </h2>
+
+    <form method="post" class="feedback-form">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label for="{{ form.rating.id_for_label }}">Оценка</label>
+            {{ form.rating }}
+            {{ form.rating.errors }}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.comment.id_for_label }}">Комментарий</label>
+            {{ form.comment }}
+            {{ form.comment.errors }}
+        </div>
+
+        <button type="submit" class="submit-btn">
+            {% if form.instance.pk %}Обновить отзыв{% else %}Отправить отзыв{% endif %}
+        </button>
+    </form>
+</div>
+{% endblock %}

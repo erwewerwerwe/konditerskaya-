@@ -1,0 +1,426 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+:root {
+    --main-brown: #5a4a3d;
+    --light-beige: #f5f0e6;
+    --border-radius: 12px;
+    --input-bg: #faf7f2;
+    --input-border: #d9d4ca;
+    --input-focus-border: #bfa67a;
+    --text-color: #3e2f22;
+    --button-bg: #5a4a3d;
+    --button-hover-bg: #3e2f22;
+    --error-color: #c94e4e;
+}
+
+.checkout-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    display: flex;
+    gap: 30px;
+    box-sizing: border-box;
+}
+
+.checkout-section {
+    flex: 2;
+    background: var(--light-beige);
+    border-radius: var(--border-radius);
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+}
+
+.order-summary {
+    flex: 1;
+    background: var(--light-beige);
+    border-radius: var(--border-radius);
+    padding: 30px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    align-self: flex-start;
+    position: sticky;
+    top: 20px;
+    box-sizing: border-box;
+}
+
+.section-title {
+    font-size: 1.8rem;
+    color: var(--main-brown);
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--input-border);
+}
+
+.form-group {
+    margin-bottom: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-color);
+}
+
+.form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--input-border);
+    border-radius: var(--border-radius);
+    background: var(--input-bg);
+    font-size: 1rem;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--input-focus-border);
+}
+
+.row {
+    display: flex;
+    gap: 15px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.row .form-group {
+    flex: 1;
+    min-width: 0; /* Это предотвращает выход за границы контейнера */
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    padding: 15px 0;
+    border-bottom: 1px solid var(--input-border);
+    box-sizing: border-box;
+}
+
+.cart-item-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-right: 20px;
+}
+
+.cart-item-details {
+    flex: 1;
+    min-width: 0; /* Это предотвращает выход за границы контейнера */
+}
+
+.cart-item-title {
+    font-weight: 600;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cart-item-price {
+    color: var(--main-brown);
+    font-weight: 600;
+}
+
+.cart-item-remove {
+    color: var(--error-color);
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+
+.order-totals {
+    margin-top: 25px;
+}
+
+.order-total-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--input-border);
+}
+
+.order-total-row:last-child {
+    border-bottom: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.submit-btn {
+    display: block;
+    width: 100%;
+    padding: 14px 0;
+    background: var(--button-bg);
+    color: #fff;
+    border: none;
+    border-radius: var(--border-radius);
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+    margin-top: 25px;
+    box-sizing: border-box;
+}
+
+.submit-btn:hover {
+    background: var(--button-hover-bg);
+}
+
+/* Стили для чекбокса согласия */
+.form-group-checkbox {
+    display: flex;
+    align-items: center;
+}
+
+.form-group-checkbox label {
+    margin-left: 10px;
+    font-weight: normal;
+}
+
+/* Стили для радио кнопок способа получения */
+.pickup-method-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.pickup-method-option {
+    display: flex;
+    align-items: center;
+}
+
+.pickup-method-option input {
+    margin-right: 10px;
+}
+
+@media (max-width: 768px) {
+    .checkout-container {
+        flex-direction: column;
+    }
+
+    .order-summary {
+        position: static;
+    }
+
+    .row {
+        flex-direction: column;
+        gap: 0;
+    }
+}
+</style>
+<div class="checkout-container">
+    <div class="checkout-section">
+        <h2 class="section-title">Данные для заказа</h2>
+        <form id="checkout-form" method="post" action="{% url 'orders:create_order' %}">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+
+            <div class="form-group">
+                <label for="{{ form.full_name.id_for_label }}">ФИО</label>
+                <input type="text" id="{{ form.full_name.id_for_label }}" name="{{ form.full_name.html_name }}"
+                       class="form-control" value="{{ form.full_name.value|default_if_none:'' }}"
+                       {% if form.full_name.field.required %}required{% endif %}>
+                {{ form.full_name.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.phone.id_for_label }}">Телефон</label>
+                <input type="text" id="{{ form.phone.id_for_label }}" name="{{ form.phone.html_name }}"
+                       class="form-control" value="{{ form.phone.value|default_if_none:'' }}"
+                       {% if form.phone.field.required %}required{% endif %}>
+                {{ form.phone.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Email</label>
+                <input type="email" id="{{ form.email.id_for_label }}" name="{{ form.email.html_name }}"
+                       class="form-control" value="{{ form.email.value|default_if_none:'' }}"
+                       {% if form.email.field.required %}required{% endif %}>
+                {{ form.email.errors }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.address.id_for_label }}">Адрес доставки</label>
+                <input type="text" id="{{ form.address.id_for_label }}" name="{{ form.address.html_name }}"
+                       class="form-control" value="{{ form.address.value|default_if_none:'' }}"
+                       {% if form.address.field.required %}required{% endif %}>
+                {{ form.address.errors }}
+            </div>
+
+            <div class="form-group">
+                <label>Способ получения</label>
+                <div class="pickup-method-options">
+                    {% for choice in form.pickup_method %}
+                    <div class="pickup-method-option">
+                        {{ choice.tag }}
+                        <label for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
+                    </div>
+                    {% endfor %}
+                </div>
+                {{ form.pickup_method.errors }}
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label for="{{ form.delivery_date.id_for_label }}">Дата доставки</label>
+                    <input type="date" id="{{ form.delivery_date.id_for_label }}" name="{{ form.delivery_date.html_name }}"
+                           class="form-control" value="{{ form.delivery_date.value|default_if_none:'' }}"
+                           {% if form.delivery_date.field.required %}required{% endif %}>
+                    {{ form.delivery_date.errors }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.delivery_time.id_for_label }}">Время доставки</label>
+                    <input type="time" id="{{ form.delivery_time.id_for_label }}" name="{{ form.delivery_time.html_name }}"
+                           class="form-control" value="{{ form.delivery_time.value|default_if_none:'' }}"
+                           {% if form.delivery_time.field.required %}required{% endif %}>
+                    {{ form.delivery_time.errors }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.comments.id_for_label }}">Комментарий к заказу</label>
+                <textarea id="{{ form.comments.id_for_label }}" name="{{ form.comments.html_name }}"
+                          class="form-control" rows="3">{% if form.comments.value %}{{ form.comments.value }}{% endif %}</textarea>
+                {{ form.comments.errors }}
+            </div>
+
+            <div class="form-group form-group-checkbox">
+                <input type="checkbox" id="{{ form.agree_terms.id_for_label }}" name="{{ form.agree_terms.html_name }}"
+                       {% if form.agree_terms.value %}checked{% endif %}
+                       {% if form.agree_terms.field.required %}required{% endif %}>
+                <label for="{{ form.agree_terms.id_for_label }}">Я согласен с условиями обработки персональных данных</label>
+                {{ form.agree_terms.errors }}
+            </div>
+
+            <button type="submit" class="submit-btn">Оформить заказ</button>
+        </form>
+    </div>
+
+    <div class="order-summary">
+        <h2 class="section-title">Ваш заказ</h2>
+        <div id="cart-items">
+            {% for item in cart_items %}
+            <div class="cart-item">
+                {% if item.product %}
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="cart-item-image">
+                    <div class="cart-item-details">
+                        <div class="cart-item-title">{{ item.product.name }}</div>
+                        <div class="cart-item-price">{{ item.quantity }} × {{ item.product.price|floatformat:2 }} ₽</div>
+                    </div>
+                {% elif item.custom_cake %}
+                    {% if item.custom_cake.photo_example %}
+                        <img src="{{ item.custom_cake.photo_example.url }}" alt="{{ item.custom_cake }}" class="cart-item-image">
+                    {% endif %}
+                    <div class="cart-item-details">
+                        <div class="cart-item-title">{{ item.custom_name|default:item.custom_cake }}</div>
+                        <div class="cart-item-price">
+                            {{ item.quantity }} ×
+                            {% if item.custom_price %}
+                                {{ item.custom_price|floatformat:2 }} ₽
+                            {% else %}
+                                {{ item.custom_cake.price|floatformat:2 }} ₽
+                            {% endif %}
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="cart-item-details">
+                        <div class="cart-item-title">Товар</div>
+                        <div class="cart-item-price">{{ item.quantity }} × 0.00 ₽</div>
+                    </div>
+                {% endif %}
+            </div>
+            {% empty %}
+            <p>Корзина пуста</p>
+            {% endfor %}
+        </div>
+
+        <div class="order-totals">
+            <div class="order-total-row">
+                <span>Сумма:</span>
+                <span id="subtotal-price">{{ cart_total|floatformat:2 }} ₽</span>
+            </div>
+            <div class="order-total-row">
+                <span>Доставка:</span>
+                <span id="delivery-cost">{% if delivery_cost == 0 %}Бесплатно{% else %}{{ delivery_cost|floatformat:2 }} ₽{% endif %}</span>
+            </div>
+            <div class="order-total-row">
+                <strong>Итого:</strong>
+                <strong id="total-price">{{ total|floatformat:2 }} ₽</strong>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('checkout-form');
+
+    // Валидация формы при отправке
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+
+        // Проверяем обязательные поля
+        const requiredFields = form.querySelectorAll('[required]');
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                field.style.borderColor = 'var(--error-color)';
+                isValid = false;
+            } else {
+                field.style.borderColor = 'var(--input-border)';
+            }
+        });
+
+        // Проверяем согласие с условиями
+        const agreeTerms = form.querySelector('[name="agree_terms"]');
+        if (!agreeTerms.checked) {
+            agreeTerms.parentElement.style.color = 'var(--error-color)';
+            isValid = false;
+        } else {
+            agreeTerms.parentElement.style.color = '';
+        }
+
+        if (!isValid) {
+            e.preventDefault();
+            alert('Пожалуйста, заполните все обязательные поля и согласитесь с условиями');
+        }
+    });
+
+    // Функция обновления стоимости доставки и итога
+    function updateCosts() {
+        const subtotal = parseFloat('{{ cart_total }}');
+        const pickupMethodInputs = form.querySelectorAll('input[name="pickup_method"]');
+        let deliveryCost = 0;
+
+        pickupMethodInputs.forEach(input => {
+            if (input.checked) {
+                deliveryCost = (input.value === 'delivery') ? 600 : 0;
+            }
+        });
+
+        const total = subtotal + deliveryCost;
+
+        document.getElementById('delivery-cost').textContent = deliveryCost === 0 ? 'Бесплатно' : deliveryCost + ' ₽';
+        document.getElementById('total-price').textContent = total.toFixed(2) + ' ₽';
+    }
+
+    // Обновляем стоимость при загрузке страницы
+    updateCosts();
+
+    // Обновляем стоимость при изменении способа получения
+    const pickupMethodInputs = form.querySelectorAll('input[name="pickup_method"]');
+    pickupMethodInputs.forEach(input => {
+        input.addEventListener('change', updateCosts);
+    });
+});
+</script>
+
+{% endblock %}

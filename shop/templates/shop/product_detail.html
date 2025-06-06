@@ -1,0 +1,585 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+:root {
+    --main-brown: #5a4a3d;
+    --main-beige-light: #d7caa9;
+    --main-beige-hover: #c1b091;
+    --bg: #fff;
+    --text-main: #5a4a3d;
+    --text-secondary: #7c6b5a;
+    --border-radius: 18px;
+    --btn-radius: 30px;
+}
+
+.pd-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 40px;
+    margin: 40px 0;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.pd-left-block {
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.pd-image-block {
+    width: 100%;
+    height: 400px;
+    overflow: hidden;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+}
+
+.pd-image-block img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    border-radius: 12px;
+}
+
+.pd-reviews-block {
+    flex: 1 1 0;
+    margin: 0;
+    min-width: 0;
+    height: 400px;
+    width: 463px;
+}
+
+
+.pd-reviews-block h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 16px; /* уменьшен отступ */
+    color: var(--main-brown);
+}
+
+.pd-review-container {
+    background: #faf9f6;
+    border: 1px solid #ddd;
+    border-radius: 14px;
+    padding: 20px;
+    margin-bottom: 20px;
+    position: relative;
+    color: var(--text-main);
+    box-shadow: 0 2px 8px rgba(90, 74, 61, 0.1);
+}
+
+
+.pd-review-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px; /* уменьшен отступ */
+}
+
+.pd-review-header strong {
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.pd-review-rating {
+    display: flex;
+    gap: 6px;
+}
+
+.pd-review-rating span {
+    font-size: 1.3rem;
+    color: #FFA800;
+}
+
+.pd-review-rating span.empty {
+    color: #E0E0E0;
+}
+
+.pd-review-actions {
+    display: flex;
+    gap: 14px;
+}
+
+.pd-review-actions a img {
+    width: 22px;
+    height: 22px;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.pd-review-actions a:hover img {
+    opacity: 0.7;
+}
+
+.pd-review-comment {
+    line-height: 1;       /* уменьшенный межстрочный интервал */
+    margin-bottom: 4px;     /* уменьшенный отступ снизу */
+    font-size: 0.95rem;     /* можно чуть уменьшить размер шрифта для компактности */
+}
+
+.pd-review-date {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.pd-helpful {
+    margin-top: 8px; /* уменьшен отступ */
+    font-weight: 600;
+    color: var(--main-brown);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.pd-helpful form {
+    display: flex;
+    gap: 8px;
+}
+
+.pd-helpful button {
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: 1.5px solid #999999;
+    background-color: #dddddd;
+    color: #555555;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.pd-helpful button:hover {
+    background-color: #cccccc;
+    border-color: #888888;
+    color: #333333;
+}
+
+.pd-info-block {
+    flex: 1.2 1 500px;
+    max-width: 540px;
+    background: var(--bg);
+    border-radius: var(--border-radius);
+    padding: 32px 38px;
+    box-sizing: border-box;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.1);
+    color: var(--text-main);
+}
+
+.pd-back-btn {
+    background-color: var(--main-beige-light);
+    color: var(--main-brown);
+    border: none;
+    border-radius: var(--btn-radius);
+    padding: 12px 36px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    margin-bottom: 32px;
+    display: inline-block;
+    text-decoration: none;
+    box-shadow: 0 2px 6px rgba(90, 74, 61, 0.2);
+}
+
+.pd-back-btn:hover {
+    background-color: var(--main-beige-hover);
+    color: var(--main-brown);
+}
+
+.pd-title {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 28px;
+}
+
+.pd-main-info > div {
+    margin-bottom: 16px;
+    font-size: 1.2rem;
+}
+
+.pd-description {
+    white-space: pre-line;
+    color: var(--text-main);
+}
+
+.pd-details strong {
+    font-weight: 700;
+    color: var(--main-brown);
+}
+
+.pd-details p {
+    margin-top: 8px;
+    white-space: pre-line;
+    color: var(--text-main);
+}
+
+.pd-nutrition {
+    margin-bottom: 30px;
+    color: var(--text-secondary);
+}
+
+.pd-nutrition-title {
+    font-size: 1.2rem;
+    margin-bottom: 12px;
+    font-weight: 700;
+    color: var(--main-brown);
+}
+
+.pd-nutrition-table {
+    display: flex;
+    gap: 28px;
+    font-size: 1rem;
+}
+
+.pd-nutrition-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pd-nutrition-label {
+    font-size: 1.2rem;
+    color: #a89b8a;
+    margin-bottom: 6px;
+}
+
+.pd-nutrition-value {
+    font-size: 1.2rem;
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+.pd-shelf-life {
+    color: var(--text-secondary);
+    font-size: 1.4rem;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.pd-shelf-life p {
+    font-weight: 400;
+    color: var(--text-main);
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 16px;
+}
+
+.pd-price-block {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 36px;
+    color: var(--text-main);
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+}
+
+.pd-price-unit {
+    font-size: 1.2rem;
+    color: #aaa;
+    font-weight: 400;
+}
+
+.pd-price {
+    color: var(--main-brown);
+}
+
+.pd-cart-btn {
+    background-color: var(--main-brown);
+    color: #fff;
+    border: none;
+    border-radius: var(--btn-radius);
+    padding: 16px 45px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    width: fit-content;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    box-shadow: 0 2px 8px rgba(90, 74, 61, 0.3);
+    font-family: initial;
+}
+
+.pd-cart-btn:hover {
+    background-color: #3e2f22;
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(62, 47, 34, 0.5);
+}
+
+@media (max-width: 1100px) {
+    .pd-container {
+        flex-direction: column;
+        gap: 32px;
+        align-items: center;
+    }
+    .pd-info-block {
+        max-width: 100%;
+        width: 100%;
+        padding: 24px 20px;
+    }
+    .pd-image-block {
+        max-width: 100%;
+        border-radius: 16px;
+    }
+}
+
+/* Ваши стили (если нужно, можно вынести в отдельный CSS-файл) */
+.btn-primary {
+    display: inline-block;
+    margin-top: 10px;
+    color: var(--main-brown);
+    background: var(--main-beige-light);
+    border-radius: 8px;
+    padding: 10px 24px;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    box-shadow: 0 2px 6px rgba(90, 74, 61, 0.2);
+}
+.btn-primary:hover,
+.btn-primary:focus {
+    background: var(--main-beige-hover);
+    color: var(--main-brown);
+    outline: none;
+}
+
+
+
+
+
+
+</style>
+
+<div class="pd-container">
+    <!-- Левая колонка: фото и отзывы -->
+    <div class="pd-left-block">
+        <div class="pd-image-block" style="margin-right: 20px;">
+            {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="pd-image">
+            {% else %}
+                <img src="{% static 'shop/images/no-image.png' %}" alt="Нет фото" class="pd-image">
+            {% endif %}
+        </div>
+
+        <div class="pd-reviews-block" style="margin-left: 20px;">
+            <div class="pd-reviews-header" style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                <h2 style="margin: 0; font-weight: 700; color: var(--main-brown); font-size: 2rem;">
+                    Отзывы
+                </h2>
+                <div class="average-rating"
+                     style="display: flex; align-items: center; gap: 6px; font-weight: 600; color: var(--main-brown); font-size: 1.2rem;">
+                    <span style="color: #FFA800; font-size: 1.5rem;">★</span>
+                    <span style="margin-left: 6px; font-size: 1rem; color: var(--text-secondary);">
+                        ({{ average_rating|floatformat:1 }})
+                    </span>
+                </div>
+            </div>
+
+            {% if reviews %}
+                {# Показываем только первый отзыв #}
+                {% with review=reviews.0 %}
+                <div class="pd-review-container">
+                    <div class="pd-review-header">
+                        <div>
+                            <strong>{{ review.user.username }}</strong>
+                            <span class="pd-review-rating">
+                                {% for i in "12345" %}
+                                    {% with star_num=i|add:"0" %}
+                                        {% if star_num <= review.rating|default:"0" %}
+                                            <span style="color: #FFA800; font-size: 1.3rem;">★</span>
+                                        {% else %}
+                                            <span style="color: #E0E0E0; font-size: 1.3rem;">★</span>
+                                        {% endif %}
+                                    {% endwith %}
+                                {% endfor %}
+                            </span>
+                        </div>
+                        {% if user == review.user %}
+                        <div class="pd-review-actions">
+                            <a href="{% url 'reviews:edit_review' review.id %}" title="Изменить">
+                                <img src="{% static 'shop/images/edit.png' %}" alt="Изменить">
+                            </a>
+                            <a href="{% url 'reviews:delete_review' review.id %}" title="Удалить"
+                               onclick="return confirm('Вы уверены, что хотите удалить отзыв?');">
+                                <img src="{% static 'shop/images/fav-remove.png' %}" alt="Удалить">
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="pd-review-comment">
+                        {{ review.comment|linebreaks }}
+                    </div>
+
+                    <div class="pd-helpful">
+                        Вам помог этот отзыв?
+                        <form method="post" action="{% url 'reviews:review_feedback' review.id %}">
+                            {% csrf_token %}
+                            <button type="submit" name="was_helpful" value="True">Да ({{ review.helpful_yes }})</button>
+                            <button type="submit" name="was_helpful" value="False">Нет ({{ review.helpful_no }})</button>
+                        </form>
+                    </div>
+                </div>
+                {% endwith %}
+
+                {# Кнопка для показа остальных отзывов #}
+                {% if reviews|length > 1 %}
+                <button id="show-all-reviews-btn" class="btn-primary">
+                    Посмотреть все отзывы ({{ reviews|length }})
+                </button>
+
+                <div id="all-reviews" style="display: none; margin-top: 20px;">
+                    {% for review in reviews|slice:"1:" %}
+                    <div class="pd-review-container">
+                        <div class="pd-review-header">
+                            <div>
+                                <strong>{{ review.user.username }}</strong>
+                                <span class="pd-review-rating">
+                                    {% for i in "12345" %}
+                                        {% with star_num=i|add:"0" %}
+                                            {% if star_num <= review.rating|default:"0" %}
+                                                <span style="color: #FFA800; font-size: 1.3rem;">★</span>
+                                            {% else %}
+                                                <span style="color: #E0E0E0; font-size: 1.3rem;">★</span>
+                                            {% endif %}
+                                        {% endwith %}
+                                    {% endfor %}
+                                </span>
+                            </div>
+                            {% if user == review.user %}
+                            <div class="pd-review-actions">
+                                <a href="{% url 'reviews:edit_review' review.id %}" title="Изменить">
+                                    <img src="{% static 'shop/images/edit.png' %}" alt="Изменить">
+                                </a>
+                                <a href="{% url 'reviews:delete_review' review.id %}" title="Удалить"
+                                   onclick="return confirm('Вы уверены, что хотите удалить отзыв?');">
+                                    <img src="{% static 'shop/images/fav-remove.png' %}" alt="Удалить">
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <div class="pd-review-comment">
+                            {{ review.comment|linebreaks }}
+                        </div>
+
+                        <div class="pd-helpful">
+                            Вам помог этот отзыв?
+                            <form method="post" action="{% url 'reviews:review_feedback' review.id %}">
+                                {% csrf_token %}
+                                <button type="submit" name="was_helpful" value="True">Да ({{ review.helpful_yes }})</button>
+                                <button type="submit" name="was_helpful" value="False">Нет ({{ review.helpful_no }})</button>
+                            </form>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            {% else %}
+                <p>Пока нет отзывов.</p>
+            {% endif %}
+
+            {% if user.is_authenticated %}
+            <a href="{% url 'reviews:add_review' product.id %}" class="btn-primary">
+                Оставить отзыв
+            </a>
+            {% else %}
+            <p><a href="{% url 'login' %}" style="color: var(--main-brown); text-decoration: underline;">Войдите</a>,
+                чтобы оставить отзыв.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Правая колонка: описание -->
+    <div class="pd-info-block">
+        <a href="/" class="pd-back-btn">← Вернуться на главную</a>
+        <h1 class="pd-title">{{ product.name }}</h1>
+        <div class="pd-main-info">
+            {% if product.weight %}
+            <div class="pd-weight"><strong>Вес готового торта:</strong> {{ product.weight }}</div>
+            {% endif %}
+            <div class="pd-description">{{ product.description|linebreaksbr }}</div>
+            {% if product.details %}
+            <div class="pd-details">
+                <strong>Подробное описание:</strong>
+                <p>{{ product.details|linebreaksbr }}</p>
+            </div>
+            {% endif %}
+        </div>
+        {% if product.nutrition_kcal or product.nutrition_protein or product.nutrition_fat or product.nutrition_carb %}
+        <div class="pd-nutrition">
+            <div class="pd-nutrition-title">В 100 г:</div>
+            <div class="pd-nutrition-table">
+                {% if product.nutrition_kcal %}
+                <div class="pd-nutrition-col">
+                    <div class="pd-nutrition-label">Ккал</div>
+                    <div class="pd-nutrition-value">{{ product.nutrition_kcal }}</div>
+                </div>
+                {% endif %}
+                {% if product.nutrition_protein %}
+                <div class="pd-nutrition-col">
+                    <div class="pd-nutrition-label">Белки</div>
+                    <div class="pd-nutrition-value">{{ product.nutrition_protein }}</div>
+                </div>
+                {% endif %}
+                {% if product.nutrition_fat %}
+                <div class="pd-nutrition-col">
+                    <div class="pd-nutrition-label">Жиры</div>
+                    <div class="pd-nutrition-value">{{ product.nutrition_fat }}</div>
+                </div>
+                {% endif %}
+                {% if product.nutrition_carb %}
+                <div class="pd-nutrition-col">
+                    <div class="pd-nutrition-label">Углеводы</div>
+                    <div class="pd-nutrition-value">{{ product.nutrition_carb }}</div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        {% if product.shelf_life_days %}
+        <div class="pd-shelf-life"><strong>Срок годности:</strong> {{ product.shelf_life_days }} дней</div>
+        {% endif %}
+        <div class="pd-price-block">
+            <span class="pd-price-unit">Цена</span>
+            <span class="pd-price">{{ product.price|floatformat:0 }} ₽</span>
+        </div>
+        <form method="post" action="{% url 'add_to_cart' product.pk %}">
+            {% csrf_token %}
+            <button type="submit" class="pd-cart-btn">В корзину</button>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const btn = document.getElementById('show-all-reviews-btn');
+    const allReviews = document.getElementById('all-reviews');
+    if (btn && allReviews) {
+        btn.addEventListener('click', function() {
+            if (allReviews.style.display === 'none') {
+                allReviews.style.display = 'block';
+                btn.textContent = 'Скрыть отзывы';
+            } else {
+                allReviews.style.display = 'none';
+                btn.textContent = 'Посмотреть все отзывы ({{ reviews|length }})';
+            }
+        });
+    }
+});
+
+
+</script>
+
+{% endblock %}
