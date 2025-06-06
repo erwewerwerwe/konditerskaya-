@@ -1,0 +1,37 @@
+# Python bytecode и кэш
+__pycache__/
+*.py[cod]
+
+# Виртуальное окружение
+venv/
+env/
+ENV/
+
+# Файлы конфигурации среды (секреты, переменные окружения)
+.env
+*.env
+
+# База данных SQLite
+db.sqlite3
+
+# Статические файлы и медиа (если не храните в репозитории)
+static/
+media/
+
+# Логи
+*.log
+
+# IDE и редакторы
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Файлы системы
+.DS_Store
+Thumbs.db
+
+# Пакеты и сборки
+*.egg-info/
+dist/
+build/
