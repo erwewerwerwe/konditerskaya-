@@ -11,9 +11,11 @@ class OrderCreateForm(forms.ModelForm):
 
     class Meta:
         model = Order
-        fields = ['full_name', 'phone', 'email', 'address', 'pickup_method', 'delivery_date', 'delivery_time', 'comments']
+        fields = ['first_name', 'last_name', 'patronymic', 'phone', 'email', 'address', 'pickup_method', 'delivery_date', 'delivery_time', 'comments']
         widgets = {
-            'full_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'patronymic': forms.TextInput(attrs={'class': 'form-control'}),
             'phone': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),

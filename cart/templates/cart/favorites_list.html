@@ -1,23 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block content %}
-<style>
-.products-list {
-    display: flex;
-    flex-wrap: wrap;             /* allow wrapping to next line */
-    justify-content: flex-start; /* align items to the left */
-    gap: 20px;                   /* optional spacing between items */
-}
-
-.product-icon {
-    width: 45px;    /* increase from previous size, e.g., 16px or 24px */
-    height: 45px;
-}
-</style>
-
+<link rel="stylesheet" href="{% static 'cart/css/favorites_list.css' %}">
 <h2 class="section-title">Избранное</h2>
-
 <div class="products-list">
     {% if products %}
     {% for product in products %}

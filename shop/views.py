@@ -1,15 +1,15 @@
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import login
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
-from .forms import UserProfileForm
-from .models import UserProfile
 from django.db.models import Q
 from django.contrib.auth.views import LogoutView
 from django.views.generic import DetailView
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import  get_object_or_404
 from .models import Product, Category
 from django.db.models import Avg
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from .forms import UserProfileForm
+from .models import UserProfile
 
 def custom_cake(request):
     return render(request, 'custom_cake/build_cake.html')
@@ -33,18 +33,19 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'registration/register.html', {'form': form})
 
+
 @login_required
 def profile(request):
     profile = UserProfile.objects.get(user=request.user)
     edit_mode = request.GET.get('edit') == '1'
 
     if request.method == 'POST':
-        form = UserProfileForm(request.POST, request.FILES, instance=profile)
+        form = UserProfileForm(request.POST, request.FILES, instance=profile, user=request.user)
         if form.is_valid():
             form.save()
             return redirect('profile')
     else:
-        form = UserProfileForm(instance=profile)
+        form = UserProfileForm(instance=profile, user=request.user)
 
     context = {
         'profile': profile,
@@ -94,22 +95,16 @@ def add_to_cart(request, product_id):
     if request.method == 'POST':
         product = get_object_or_404(Product, pk=product_id)
 
-        # Получаем корзину из сессии или создаём новую
         cart = request.session.get('cart', {})
 
-        # Добавляем товар в корзину или увеличиваем количество
         if str(product_id) in cart:
             cart[str(product_id)] += 1
         else:
             cart[str(product_id)] = 1
 
-        # Сохраняем корзину обратно в сессию
         request.session['cart'] = cart
 
-        # Перенаправляем пользователя на страницу корзины
         return redirect('shop:cart_detail')
-
-    # Если запрос не POST, перенаправляем обратно на страницу товара
     return redirect('shop:product_detail', pk=product_id)
 
 def cart_detail(request):
@@ -136,21 +131,18 @@ def cart_detail(request):
 
 def category_list(request):
     categories = Category.objects.all()
-    return render(request, 'shop/category_list.html', {'categories': categories})
+    return render(request, 'shop/category_detail.html', {'categories': categories})
 
 def category_detail(request, slug):
     category = get_object_or_404(Category, slug=slug)
     products = category.products.all()
-
-    # Фильтрация по весу (если указана)
     weight = request.GET.get('weight')
     if weight:
         try:
             weight_val = float(weight)
-            # Используйте диапазон для сравнения, например ±0.1 для учета округлений
             products = products.filter(weight=weight_val)
         except ValueError:
-            pass  # если вес введен некорректно — игнорируем фильтр
+            pass
 
     # Сортировка
     sort = request.GET.get('sort')
@@ -175,10 +167,8 @@ def product_list(request):
             weight_value = float(weight)
             products = products.filter(weight__gte=weight_value)  # фильтр по весу >= введённого
         except ValueError:
-            pass  # если введено не число — игнорируем фильтр
-
+            pass
     return render(request, 'shop/product_list.html', {'products': products})
-
 
 def base_view(request):
     categories = Category.objects.all()

@@ -1,7 +1,4 @@
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
 from shop.models import Product
-from .models import Review
 from .forms import ReviewForm
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
@@ -9,17 +6,15 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 from .forms import ReviewFeedbackForm
 from .models import Review, ReviewFeedback
-from django.db.models import Avg
+
 
 @login_required
 def add_review(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-
-    # Проверяем, есть ли уже отзыв от этого пользователя на этот товар
     existing_review = Review.objects.filter(product=product, user=request.user).first()
     if existing_review:
         messages.warning(request, "Вы уже оставили отзыв на этот товар.")
-        return redirect('product_detail', pk=product.id)  # или другой URL
+        return redirect('product_detail', pk=product.id)
 
     if request.method == 'POST':
         form = ReviewForm(request.POST)
@@ -57,12 +52,10 @@ def delete_review(request, review_id):
     review = get_object_or_404(Review, id=review_id, user=request.user)
     if request.method == 'POST':
         review.delete()
-        # Перенаправляем на страницу товара без вывода сообщений
         return redirect('product_detail', pk=review.product.id)
-    # При GET-запросе показываем форму подтверждения удаления
     return render(request, 'reviews/review_confirm_delete.html', {
         'review': review,
-        'hide_messages': True,  # флаг для отключения сообщений в шаблоне
+        'hide_messages': True,
     })
 
 @login_required
@@ -75,7 +68,6 @@ def helpful_vote(request, review_id):
     elif vote == 'no':
         review.helpful_no += 1
     else:
-        # Некорректный голос — можно просто игнорировать или обработать иначе
         return redirect('product_detail', pk=review.product.id)
 
     review.save()
@@ -93,8 +85,6 @@ def review_feedback(request, review_id):
             feedback.review = review
             feedback.user = request.user
             feedback.save()
-
-            # Обновляем счетчики helpful_yes и helpful_no у отзыва
             review.helpful_yes = review.feedbacks.filter(was_helpful=True).count()
             review.helpful_no = review.feedbacks.filter(was_helpful=False).count()
             review.save()

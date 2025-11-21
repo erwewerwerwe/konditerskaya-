@@ -1,277 +1,145 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block title %}Профиль пользователя{% endblock %}
-
 {% block content %}
-<style>
-  .profile-content {
-    max-width: 1200px;
-    margin: 30px auto 80px;
-    padding: 0 20px;
-    color: #444;
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 60px;
-}
-
-.profile-photo-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 60px; /* смещаем фото ниже */
-}
-
-.profile-photo {
-    width: 350px;
-    height: 350px;
-    border-radius: 18px;
-    object-fit: cover;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-    margin-bottom: 20px;
-}
-
-.no-photo {
-    width: 250px;
-    height: 250px;
-    border-radius: 18px;
-    background-color: #f0f0f0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #888;
-    margin-bottom: 20px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.12);
-    user-select: none;
-}
-
-.change-photo-btn {
-    background-color: #f0f0f0;
-    color: #5a4a3d; /* тёмно-коричневый */
-    border: none;
-    border-radius: 8px;
-    padding: 10px 20px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-}
-
-.change-photo-btn:hover {
-    background-color: #e0e0e0;
-}
-
-.profile-info {
-    padding-top: 20px;
-}
-
-.info-block {
-    margin-bottom: 30px;
-}
-
-.info-block h3 {
-    color: #5a4a3d; /* тёмно-коричневый */
-    margin-bottom: 15px;
-    font-size: 1.4rem;
-}
-
-.info-row {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    margin-bottom: 15px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #eee;
-}
-
-.info-label {
-    font-weight: 600;
-    color: #666;
-}
-
-.info-value {
-    color: #333;
-    font-size: 1.1rem;
-}
-
-.edit-btn, .save-btn {
-    background-color: #5a4a3d; /* тёмно-коричневый */
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 14px 32px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin-top: 20px;
-    display: inline-block;
-}
-
-.edit-btn:hover, .save-btn:hover {
-    background-color: #3e2f22; /* более тёмный коричневый */
-}
-
-.password-field {
-    position: relative;
-}
-
-.password-mask {
-    letter-spacing: 4px;
-}
-
-.change-password-link {
-    color: #5a4a3d; /* тёмно-коричневый */
-    text-decoration: none;
-    font-weight: 600;
-    margin-left: 12px;
-    cursor: pointer;
-}
-
-.change-password-link:hover {
-    text-decoration: underline;
-}
-
-@media (max-width: 768px) {
-    .profile-content {
-        grid-template-columns: 1fr;
-        gap: 40px;
-    }
-
-    .info-row {
-        grid-template-columns: 1fr;
-    }
-}
-
-</style>
+<link rel="stylesheet" href="{% static 'shop/css/profile.css' %}">
 
 <div class="profile-content">
-  <div class="profile-photo-section">
-    {% if profile.image %}
-      <img src="{{ profile.image.url }}" alt="Фото пользователя" class="profile-photo" id="profile-photo-preview">
-    {% else %}
-      <div class="no-photo" id="profile-photo-preview">Фото профиля</div>
-    {% endif %}
+    <div class="profile-photo-section">
+        {% if profile.image %}
+            <img src="{{ profile.image.url }}" alt="Фото пользователя" class="profile-photo" id="profile-photo-preview-img">
+        {% else %}
+            <div class="no-photo" id="profile-photo-preview-div">Фото профиля</div>
+        {% endif %}
 
-    {% if edit_mode %}
-      <!-- File input inside form, hidden -->
-      <input type="file" name="image" id="id_image" style="display:none;" accept="image/*" form="profile-form">
+        {% if edit_mode %}
+            <input type="file" name="image" id="id_image" style="display:none;" accept="image/*" form="profile-form">
 
-      <button type="button" class="change-photo-btn" id="change-photo-btn">Изменить фото</button>
-    {% endif %}
-  </div>
+            <button type="button" class="change-photo-btn" id="change-photo-btn">Изменить фото</button>
+        {% endif %}
+    </div>
 
-  <div class="profile-info">
-    {% if edit_mode %}
-      <form method="post" enctype="multipart/form-data" id="profile-form">
-        {% csrf_token %}
+    <div class="profile-info">
+        {% if edit_mode %}
+            <form method="post" enctype="multipart/form-data" id="profile-form">
+                {% csrf_token %}
 
-        <div class="info-block">
-          <h3>Основная информация</h3>
+                <div class="info-block">
+                    <h3>Основная информация</h3>
 
-          <div class="info-row">
-            <label for="{{ form.last_name.id_for_label }}" class="info-label">Фамилия</label>
-            {{ form.last_name }}
-          </div>
+                    <div class="info-row">
+                        <label for="{{ form.last_name.id_for_label }}" class="info-label">Фамилия</label>
+                        {{ form.last_name }}
+                    </div>
 
-          <div class="info-row">
-            <label for="{{ form.first_name.id_for_label }}" class="info-label">Имя</label>
-            {{ form.first_name }}
-          </div>
+                    <div class="info-row">
+                        <label for="{{ form.first_name.id_for_label }}" class="info-label">Имя</label>
+                        {{ form.first_name }}
+                    </div>
 
-          <div class="info-row">
-            <label for="{{ form.patronymic.id_for_label }}" class="info-label">Отчество</label>
-            {{ form.patronymic }}
-          </div>
+                    <div class="info-row">
+                        <label for="{{ form.patronymic.id_for_label }}" class="info-label">Отчество</label>
+                        {{ form.patronymic }}
+                    </div>
 
-          <div class="info-row">
-            <label for="{{ form.birth_date.id_for_label }}" class="info-label">Дата рождения</label>
-            {{ form.birth_date }}
-          </div>
+                    <div class="info-row">
+                        <label for="{{ form.birth_date.id_for_label }}" class="info-label">Дата рождения</label>
+                        {{ form.birth_date }}
+                    </div>
 
-          <div class="info-row">
-            <label for="{{ form.gender.id_for_label }}" class="info-label">Пол</label>
-            {{ form.gender }}
-          </div>
+                    <div class="info-row">
+                        <label for="{{ form.gender.id_for_label }}" class="info-label">Пол</label>
+                        {{ form.gender }}
+                    </div>
 
-          <div class="info-row">
-            <label for="{{ form.city.id_for_label }}" class="info-label">Город</label>
-            {{ form.city }}
-          </div>
-        </div>
+                    <div class="info-row">
+                        <label for="{{ form.city.id_for_label }}" class="info-label">Город</label>
+                        {{ form.city }}
+                    </div>
+                </div>
+                <div class="info-row">
+                    <label for="{{ form.email.id_for_label }}" class="info-label">Электронная почта</label>
+                    {{ form.email }}
+                </div>
 
-        <div class="info-block">
-          <h3>Контактные данные</h3>
+                <button type="submit" class="save-btn">Сохранить изменения</button>
+            </form>
+        {% else %}
+            <div class="info-block">
+                <h3>Основная информация</h3>
 
-          <div class="info-row">
-            <div class="info-label">Электронная почта</div>
-            <div class="info-value">{{ user.email }}</div>
-          </div>
+                <div class="info-row">
+                    <div class="info-label">Фамилия:</div>
+                    <div class="info-value">{{ profile.last_name }}</div>
+                </div>
 
-        <button type="submit" class="save-btn">Сохранить изменения</button>
-      </form>
-    {% else %}
-      <div class="info-block">
-        <h3>Основная информация</h3>
+                <div class="info-row">
+                    <div class="info-label">Имя:</div>
+                    <div class="info-value">{{ profile.first_name }}</div>
+                </div>
 
-        <div class="info-row">
-          <div class="info-label">Фамилия:</div>
-          <div class="info-value">{{ profile.last_name }}</div>
-        </div>
+                <div class="info-row">
+                    <div class="info-label">Отчество:</div>
+                    <div class="info-value">{{ profile.patronymic }}</div>
+                </div>
 
-        <div class="info-row">
-          <div class="info-label">Имя:</div>
-          <div class="info-value">{{ profile.first_name }}</div>
-        </div>
+                <div class="info-row">
+                    <div class="info-label">Дата рождения:</div>
+                    <div class="info-value">{{ profile.birth_date|date:"d.m.Y" }}</div>
+                </div>
 
-        <div class="info-row">
-          <div class="info-label">Отчество:</div>
-          <div class="info-value">{{ profile.patronymic }}</div>
-        </div>
+                <div class="info-row">
+                    <div class="info-label">Пол:</div>
+                    <div class="info-value">
+                        {% if profile.gender == "M" %}Мужской{% elif profile.gender == "F" %}Женский{% else %}-{% endif %}
+                    </div>
+                </div>
 
-        <div class="info-row">
-          <div class="info-label">Дата рождения:</div>
-          <div class="info-value">{{ profile.birth_date|date:"d.m.Y" }}</div>
-        </div>
+                <div class="info-row">
+                    <div class="info-label">Город:</div>
+                    <div class="info-value">{{ profile.city }}</div>
+                </div>
+            </div>
 
-        <div class="info-row">
-          <div class="info-label">Пол:</div>
-          <div class="info-value">
-            {% if profile.gender == "M" %}Мужской{% elif profile.gender == "F" %}Женский{% else %}-{% endif %}
-          </div>
-        </div>
+            <div class="info-block">
+                <h3>Контактные данные</h3>
 
-        <div class="info-row">
-          <div class="info-label">Город:</div>
-          <div class="info-value">{{ profile.city }}</div>
-        </div>
-      </div>
+                <div class="info-row">
+                    <div class="info-label">Электронная почта:</div>
+                    <div class="info-value">{{ user.email }}</div>
+                </div>
 
-      <div class="info-block">
-        <h3>Контактные данные</h3>
-
-        <div class="info-row">
-          <div class="info-label">Электронная почта:</div>
-          <div class="info-value">{{ user.email }}</div>
-        </div>
-
-      <a href="?edit=1"><button class="edit-btn">Изменить профиль</button></a>
-    {% endif %}
-  </div>
+                <a href="?edit=1">
+                    <button class="edit-btn">Изменить профиль</button>
+                </a>
+            </div>
+        {% endif %}
+    </div>
 </div>
 
 <script>
-  // Trigger file input when clicking "Change photo"
   document.getElementById('change-photo-btn')?.addEventListener('click', function() {
     document.getElementById('id_image').click();
   });
-
-  // Preview selected image
   document.getElementById('id_image')?.addEventListener('change', function(e) {
     if (e.target.files && e.target.files[0]) {
       const reader = new FileReader();
       reader.onload = function(event) {
-        const img = document.getElementById('profile-photo-preview');
+        // Попытка найти элемент img для превью
+        const img = document.getElementById('profile-photo-preview-img');
+        const div = document.getElementById('profile-photo-preview-div');
+
         if (img) {
           img.src = event.target.result;
+        } else if (div) {
+          // Если img нет, заменяем div на img
+          const newImg = document.createElement('img');
+          newImg.id = 'profile-photo-preview-img';
+          newImg.className = 'profile-photo';
+          newImg.src = event.target.result;
+          newImg.alt = 'Фото пользователя';
+
+          div.replaceWith(newImg);
         }
       };
       reader.readAsDataURL(e.target.files[0]);

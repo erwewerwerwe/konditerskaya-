@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      - "8001:8000"
+    volumes:
+      - konditerskaya-db:/app
+      - konditerskaya-media:/app/media
+volumes:
+  konditerskaya-db:
+  konditerskaya-media:

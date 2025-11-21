@@ -1,9 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from .models import Order, OrderItem
 from .forms import OrderCreateForm
-from cart.models import Cart  # Предполагается, что корзина реализована
+from cart.models import Cart
 
 
 @login_required
@@ -11,7 +10,6 @@ def create_order(request):
     cart = get_object_or_404(Cart, user=request.user)
     cart_items = cart.items.all()
 
-    # Подсчёт общей суммы через свойство sub_total у CartItem
     cart_total = sum(item.sub_total for item in cart_items)
 
     if request.method == 'POST':
@@ -24,12 +22,10 @@ def create_order(request):
             order.save()
 
             for item in cart_items:
-                # Определяем цену для OrderItem
                 if item.product:
                     price = item.product.price
                     custom_name = None
                 elif item.custom_cake:
-                    # Цена кастомного торта
                     if hasattr(item.custom_cake, 'price') and item.custom_cake.price is not None:
                         price = item.custom_cake.price
                     elif hasattr(item.custom_cake, 'get_price'):
@@ -85,6 +81,5 @@ def order_delete(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
     if request.method == 'POST':
         order.delete()
-        return redirect('orders:user_orders')  # или куда хотите после удаления
-    # Если GET-запрос, можно показать страницу подтверждения или редирект
+        return redirect('orders:user_orders')
     return redirect('orders:user_orders')

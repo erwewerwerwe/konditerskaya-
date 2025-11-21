@@ -1,342 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
-{% get_static_prefix as STATIC_PREFIX %}
-
 {% block content %}
-<style>
-:root {
-    --main-brown: #5a4a3d;
-    --light-beige: #f5f0e6;
-    --border-radius: 12px;
-    --input-bg: #faf7f2;
-    --input-border: #d9d4ca;
-    --input-focus-border: #bfa67a;
-    --text-color: #3e2f22;
-    --placeholder-color: #a89f94;
-    --checkbox-color: #5a4a3d;
-    --button-bg: #5a4a3d;
-    --button-hover-bg: #3e2f22;
-    --error-color: #c94e4e;
-    --section-bg: #fff9f0;
-    --highlight: #ffd700;
-}
-
-.custom-cake-container {
-    max-width: 900px;
-    margin: 40px auto 60px;
-    background: var(--light-beige);
-    border-radius: var(--border-radius);
-    box-shadow: 0 6px 18px rgba(90, 74, 61, 0.15);
-    padding: 40px 35px;
-    color: var(--text-color);
-}
-
-.custom-cake-title {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--main-brown);
-    margin-bottom: 30px;
-    text-align: center;
-    letter-spacing: 1px;
-}
-
-.cake-builder {
-    display: flex;
-    gap: 30px;
-    margin-bottom: 40px;
-}
-
-.cake-visual {
-    flex: 1;
-    min-width: 300px;
-    background: var(--section-bg);
-    border-radius: var(--border-radius);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
-    position: relative;
-    overflow: hidden;
-}
-
-.cake-preview-container {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.cake-decoration-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-    margin-top: 20px;
-    width: 100%;
-}
-
-.cake-decoration-item {
-    width: 80px;
-    height: 80px;
-    background: white;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    border: 2px solid var(--input-border);
-}
-
-.cake-decoration-item img {
-    max-width: 60px;
-    max-height: 60px;
-}
-
-.cake-preview {
-    width: 250px;
-    height: 250px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    margin: 20px 0;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-    border-radius: 8px;
-    overflow: hidden;
-}
-
-.cake-outside {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: #f5f0e6;
-    z-index: 1;
-    border: 2px solid var(--main-brown);
-}
-
-.cake-inside {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    z-index: 2;
-    overflow: hidden;
-}
-
-.cake-biscuit-top {
-    height: 60px;
-    background: #e8c988;
-    border-bottom: 2px solid rgba(0,0,0,0.1);
-}
-
-.cake-biscuit-bottom {
-    height: 60px;
-    background: #e8c988;
-    border-top: 2px solid rgba(0,0,0,0.1);
-}
-
-.cake-cream {
-    flex-grow: 1;
-    background: #f5e6c8;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-}
-
-.cake-filling {
-    width: 80%;
-    height: 40px;
-    background: #e6b574;
-    border-radius: 20px;
-}
-
-.cake-options {
-    flex: 1;
-    min-width: 300px;
-}
-
-.option-tabs {
-    display: flex;
-    margin-bottom: 20px;
-    border-bottom: 2px solid var(--input-border);
-}
-
-.option-tab {
-    padding: 10px 20px;
-    cursor: pointer;
-    font-weight: 600;
-    color: var(--text-color);
-    border-bottom: 3px solid transparent;
-    transition: all 0.2s;
-}
-
-.option-tab.active {
-    color: var(--main-brown);
-    border-bottom: 3px solid var(--main-brown);
-}
-
-.option-content {
-    display: none;
-}
-
-.option-content.active {
-    display: block;
-}
-
-.option-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-    gap: 15px;
-}
-
-.option-item {
-    background: var(--section-bg);
-    border-radius: 8px;
-    padding: 15px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: 2px solid transparent;
-}
-
-.option-item:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.option-item.selected {
-    border-color: var(--main-brown);
-    background: #f0e6d2;
-}
-
-.option-item img {
-    width: 50px;
-    height: 50px;
-    object-fit: contain;
-    margin-bottom: 10px;
-}
-
-.option-item .option-name {
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-
-.custom-input {
-    margin-top: 15px;
-    display: none;
-}
-
-.price-block {
-    font-size: 1.5rem;
-    font-weight: 700;
-    text-align: center;
-    margin: 30px 0 40px;
-    color: var(--main-brown);
-    letter-spacing: 0.5px;
-}
-
-.submit-btn {
-    display: block;
-    width: 100%;
-    padding: 14px 0;
-    background: var(--button-bg);
-    color: #fff;
-    border: none;
-    border-radius: var(--border-radius);
-    font-size: 1.25rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background-color 0.25s ease;
-    box-shadow: 0 4px 8px rgba(90, 74, 61, 0.3);
-    font-family: inherit
-}
-
-.submit-btn:hover {
-    background: var(--button-hover-bg);
-}
-
-@media (max-width: 768px) {
-    .cake-builder {
-        flex-direction: column;
-    }
-
-    .cake-visual {
-        order: -1;
-        margin-bottom: 30px;
-    }
-}
-
-/* Анимации */
-@keyframes pulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.05); }
-    100% { transform: scale(1); }
-}
-
-.cake-preview.updated {
-    animation: pulse 0.5s ease;
-}
-
-.form-section {
-    margin: 20px 0;
-}
-
-.form-section label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-}
-
-.form-section select,
-.form-section textarea,
-.form-section input[type="file"] {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid var(--input-border);
-    border-radius: var(--border-radius);
-    background: var(--input-bg);
-    font-family: inherit;
-}
-
-.form-section textarea {
-    resize: vertical;
-}
-
-/* Добавьте эти стили в ваш CSS */
-#selected-flavors {
-    display: flex;
-    justify-content: center; /* Выравнивание по центру */
-    align-items: center;
-    gap: 10px; /* Отступы между иконками */
-    margin-top: 15px;
-}
-
-#selected-flavors img {
-    width: 40px;
-    height: 40px;
-    object-fit: contain;
-    display: block; /* Чтобы убрать возможные пробелы под изображением */
-}
-input[type="file"]::-webkit-file-upload-button {
-    background-color: #cbbca7; /* темно-бежевый */
-    color: white;
-    border: none;
-    border-radius: var(--border-radius);
-    padding: 6px 12px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.25s ease;
-    font-family: inherit;
-}
-
-input[type="file"]::-webkit-file-upload-button:hover {
-    background-color: #b3a68f; /* чуть темнее при наведении */
-}
-
-</style>
+<link rel="stylesheet" href="{% static 'custom_cake/css/build_cake.css' %}">
 
 <div class="custom-cake-container">
     <h1 class="custom-cake-title">Конструктор торта</h1>
@@ -354,11 +19,7 @@ input[type="file"]::-webkit-file-upload-button:hover {
                         <div class="cake-biscuit-bottom" id="biscuit-bottom-visual"></div>
                     </div>
                 </div>
-
-                <div class="cake-decoration-container" id="selected-flavors">
-                    <!-- Здесь будут отображаться иконки выбранных вкусов -->
-                </div>
-
+                <div class="cake-decoration-container" id="selected-flavors"></div>
                 <div class="cake-description" id="cake-description"
                      style="margin-top: 20px; text-align: center; font-weight: 600;"></div>
             </div>
@@ -376,7 +37,6 @@ input[type="file"]::-webkit-file-upload-button:hover {
                   action="{% url 'custom_cake:build_cake' %}">
                 {% csrf_token %}
 
-                <!-- Бисквит -->
                 <div class="option-content active" id="biscuit-content">
                     <div class="option-grid">
                         <div class="option-item" data-value="vanilla" data-name="Ванильный" data-color="#f5e6c8"
@@ -412,7 +72,6 @@ input[type="file"]::-webkit-file-upload-button:hover {
                     </div>
                 </div>
 
-                <!-- Крем -->
                 <div class="option-content" id="cream-content">
                     <div class="option-grid">
                         <div class="option-item" data-value="butter" data-name="Масляный" data-color="#f5e6c8"
@@ -432,7 +91,7 @@ input[type="file"]::-webkit-file-upload-button:hover {
                         </div>
                         <div class="option-item" data-value="chocolate" data-name="Шоколадный" data-color="#d4b574"
                              data-icon="cream-chocolate.png">
-                            <img src="{% static 'shop/images_cake/biscuit-chocolate.png' %}" alt="Шоколадный">
+                            <img src="{% static 'shop/images_cake/cream-chocolate.png' %}" alt="Шоколадный">
                             <div class="option-name">Шоколадный</div>
                         </div>
                         <div class="option-item" data-value="other" data-name="Другой" data-color="#f5e6c8"
@@ -448,7 +107,6 @@ input[type="file"]::-webkit-file-upload-button:hover {
                     </div>
                 </div>
 
-                <!-- Начинка -->
                 <div class="option-content" id="filling-content">
                     <div class="option-grid">
                         <div class="option-item" data-value="strawberry" data-name="Клубника" data-color="#ff6b6b"
@@ -484,7 +142,6 @@ input[type="file"]::-webkit-file-upload-button:hover {
                     </div>
                 </div>
 
-                <!-- Оформление -->
                 <div class="option-content" id="decoration-content">
                     <div class="option-grid">
                         <div class="option-item" data-value="cream" data-name="Крем" data-icon="decor-cream.png">
@@ -516,7 +173,6 @@ input[type="file"]::-webkit-file-upload-button:hover {
                     </div>
                 </div>
 
-                <!-- Дополнительные параметры -->
                 <div class="form-section">
                     <label for="id_weight">Вес торта (кг)</label>
                     <select name="weight" id="id_weight" required>
@@ -551,10 +207,7 @@ input[type="file"]::-webkit-file-upload-button:hover {
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Получаем префикс статических файлов из шаблона
     const STATIC_URL = "{% static '' %}";
-
-    // Переключение вкладок
     const tabs = document.querySelectorAll('.option-tab');
     tabs.forEach(tab => {
         tab.addEventListener('click', function() {
@@ -568,16 +221,12 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById(`${tabId}-content`).classList.add('active');
         });
     });
-
-    // Выбор опций
     const optionItems = document.querySelectorAll('.option-item');
     const cakePreview = document.getElementById('cake-preview');
     const cakeDescription = document.getElementById('cake-description');
     const selectedFlavorsContainer = document.getElementById('selected-flavors');
     let selectedDecorations = [];
     let selectedFlavors = {};
-
-    // Словарь для названий оформления
     const decorationNames = {
         'cream': 'Крем',
         'sprinkles': 'Посыпка',
@@ -585,7 +234,6 @@ document.addEventListener('DOMContentLoaded', function() {
         'nuts': 'Орехи',
         'other': 'Другое'
     };
-
     optionItems.forEach(item => {
         item.addEventListener('click', function() {
             const tab = this.closest('.option-content').id.replace('-content', '');
@@ -594,20 +242,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const color = this.getAttribute('data-color');
             const icon = this.getAttribute('data-icon');
 
-            // Сброс предыдущего выбора в этой вкладке (кроме оформления)
             if (tab !== 'decoration') {
                 document.querySelectorAll(`#${tab}-content .option-item`).forEach(i => {
                     i.classList.remove('selected');
                 });
                 this.classList.add('selected');
             }
-
-            // Установка значения в скрытое поле
             if (tab !== 'decoration') {
                 document.getElementById(`id_${tab}`).value = value;
             }
-
-            // Обработка поля "Другое"
             const customContainer = document.getElementById(`${tab}-custom-container`);
             if (value === 'other') {
                 customContainer.style.display = 'block';
@@ -617,17 +260,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById(`id_${tab}_custom`).required = false;
                 document.getElementById(`id_${tab}_custom`).value = '';
 
-                // Обновление визуализации
                 updateCakeVisual(tab, value, name, color);
-
-                // Сохраняем выбранный вкус для отображения иконки
                 if (tab !== 'decoration') {
                     selectedFlavors[tab] = {name, icon};
                     updateSelectedFlavors();
                 }
             }
 
-            // Особый случай для оформления (можно выбирать несколько)
             if (tab === 'decoration') {
                 if (value === 'other') return;
 
@@ -683,8 +322,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function updateDecorationsVisual() {
-        // Для оформления мы просто сохраняем выбранные варианты
-        // Фактическое оформление будет применяться при производстве
         updateCakeDescription();
     }
 
@@ -698,18 +335,13 @@ document.addEventListener('DOMContentLoaded', function() {
         cakeDescription.textContent = `Ваш торт: ${biscuit} бисквит, ${cream} крем, ${filling} начинка, оформление: ${decorations}`;
     }
 
-    // Расчет цены
     function calculatePrice() {
         const basePricePerKg = 1000;
         const weight = parseFloat(document.getElementById('id_weight').value) || 1;
         let price = basePricePerKg * weight;
         document.getElementById('cake-price').textContent = price.toFixed(2);
     }
-
-    // Слушаем изменения веса для пересчета цены
     document.getElementById('id_weight').addEventListener('change', calculatePrice);
-
-    // Инициализация цены
     calculatePrice();
 });
 </script>

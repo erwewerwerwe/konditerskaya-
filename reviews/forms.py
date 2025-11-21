@@ -13,8 +13,7 @@ class ReviewForm(forms.ModelForm):
 class ReviewFeedbackForm(forms.ModelForm):
     class Meta:
         model = ReviewFeedback
-        fields = ['was_helpful', 'comment']
+        fields = ['was_helpful']
         widgets = {
             'was_helpful': forms.RadioSelect(choices=[(True, 'Да'), (False, 'Нет')]),
-            'comment': forms.Textarea(attrs={'rows': 2, 'placeholder': 'Ваш комментарий'}),
         }

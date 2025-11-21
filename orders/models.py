@@ -1,7 +1,6 @@
 from django.db import models
 from django.conf import settings
-from shop.models import Product  # Предполагается, что есть приложение shop с моделью Product
-
+from shop.models import Product
 
 class Order(models.Model):
     PICKUP_CHOICES = [
@@ -18,7 +17,9 @@ class Order(models.Model):
     ]
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    full_name = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    patronymic = models.CharField(max_length=100)
     phone = models.CharField(max_length=20)
     email = models.EmailField()
     address = models.TextField()
@@ -40,7 +41,7 @@ class Order(models.Model):
         ordering = ['-created']
 
     def __str__(self):
-        return f'Заказ #{self.id} от {self.full_name}'
+        return f'Заказ #{self.id} от {self.first_name}'
 
     def get_total_cost(self):
         return self.total_price + self.delivery_cost

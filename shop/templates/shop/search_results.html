@@ -1,18 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block title %}Результаты поиска{% endblock %}
-
 {% block content %}
-<style>
 
-.product-icon {
-    width: 45px;    /* increase from previous size, e.g., 16px or 24px */
-    height: 45px;
-}
-</style>
+<link rel="stylesheet" href="{% static 'shop/css/search_results.css' %}">
 <h2 class="section-title">Результаты поиска по запросу: "{{ query }}"</h2>
-
 <div class="products-list">
     {% if products %}
     {% for product in products %}
@@ -27,11 +19,11 @@
         <div class="product-info">
             <div class="product-row">
                 <img src="{% static 'shop/images/weightt.png' %}" alt="bag" class="product-icon">
-                <span>{{ product.weight }}</span>
+                <span>{{ product.weight }} кг </span>
             </div>
             <div class="product-row">
                 <img src="{% static 'shop/images/cutleryy.png' %}" alt="Количество человек" class="product-icon">
-                <span>{{ product.persons_info }}</span>
+                <span>{{ product.persons_info }} человек </span>
             </div>
         </div>
         <div class="product-actions">

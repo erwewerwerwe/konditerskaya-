@@ -12,8 +12,6 @@ urlpatterns = [
     path('reviews/', include('reviews.urls', namespace='reviews')),
     path('custom-cake/', include('custom_cake.urls')),
     path('orders/', include('orders.urls', namespace='orders')),
-
-
 # маршруты приложения
     path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
 ]

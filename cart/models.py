@@ -6,7 +6,6 @@ from decimal import Decimal
 
 User = get_user_model()
 
-
 class Cart(models.Model):
     cart_id = models.CharField(max_length=50, unique=True, null=True, blank=True)
     date_added = models.DateTimeField(auto_now_add=True)

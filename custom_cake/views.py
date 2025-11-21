@@ -13,14 +13,11 @@ def build_cake(request):
             order = form.save(commit=False)
             order.user = request.user
 
-            # Обработка полей "Другое"
             for field in ['biscuit', 'cream', 'filling']:
                 if getattr(order, field) == 'other':
                     setattr(order, field, form.cleaned_data.get(f'{field}_custom'))
 
-            # Универсальная обработка оформления:
             decoration_value = form.cleaned_data.get('decoration') or []
-            # Если оформление пришло как строка (например, из скрытого поля), превращаем в список
             if isinstance(decoration_value, str):
                 decoration_list = [d.strip() for d in decoration_value.split(',') if d.strip()]
             else:
@@ -32,10 +29,8 @@ def build_cake(request):
                 if custom_decoration:
                     decoration_list.append(custom_decoration)
 
-            # Сохраняем оформления как строку с разделителем без пробелов
             order.decoration = ','.join(decoration_list)
 
-            # Рассчитываем цену
             base_price_per_kg = Decimal('1000.00')
             weight = Decimal(str(order.weight))
             order.price = base_price_per_kg * weight
@@ -44,7 +39,6 @@ def build_cake(request):
 
             cart, _ = Cart.objects.get_or_create(user=request.user)
 
-            # Создаём или обновляем элемент корзины
             item, created = CartItem.objects.get_or_create(
                 cart=cart,
                 custom_cake=order,
@@ -72,7 +66,6 @@ def add_custom_cake_to_cart(request, cake_id):
     weight = Decimal(str(cake.weight))
     calculated_price = base_price_per_kg * weight
 
-    # Обновляем цену кастомного торта, если нужно
     if cake.price != calculated_price:
         cake.price = calculated_price
         cake.save()

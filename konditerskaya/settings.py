@@ -16,8 +16,24 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'custom_cake/static'),
+    os.path.join(BASE_DIR,'checkout.css/static'),
+    os.path.join(BASE_DIR,'order_detail.css/static'),
+    os.path.join(BASE_DIR,'user_orders.css/static'),
+    os.path.join(BASE_DIR,'review_confirm_delete.css/static'),
+    os.path.join(BASE_DIR,'review_form.css/static'),
+    os.path.join(BASE_DIR,'favorites_list.css/static'),
+    os.path.join(BASE_DIR,'cart_detail.css/static'),
+    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'cart_detail.css/static'),
+    os.path.join(BASE_DIR, 'index.css/static'),
+    os.path.join(BASE_DIR, 'product_detail.css/static'),
+    os.path.join(BASE_DIR, 'profile.css/static'),
+    os.path.join(BASE_DIR, 'search_results.css/static'),
 
-# Application definition
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -30,7 +46,7 @@ INSTALLED_APPS = [
     'cart',
     'custom_cake',
     'orders',
-    'reviews'
+    'reviews',
 
 ]
 
@@ -75,13 +91,7 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 STATIC_URL = '/static/'
-# STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-MEDIA_URL = '/media/'
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
-]
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
